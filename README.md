@@ -1,0 +1,2 @@
+# stam-prolog
+stamProlog
