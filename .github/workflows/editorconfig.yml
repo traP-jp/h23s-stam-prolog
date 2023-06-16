@@ -1,0 +1,27 @@
+name: Editorconfig
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency: ci-editorconfig-${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  editor-config:
+    env:
+      EDITORCONFIG_CHECKER_VERSION: 2.7.0
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: install editorconfig-checker
+        run: "curl -sSL \
+            https://github.com/editorconfig-checker/editorconfig-checker/releases/download/\
+            ${EDITORCONFIG_CHECKER_VERSION}/ec-linux-amd64.tar.gz \
+            | tar -xz"
+      - name: run check
+        run: bin/ec-linux-amd64

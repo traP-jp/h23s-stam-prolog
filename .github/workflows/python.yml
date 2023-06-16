@@ -1,0 +1,44 @@
+name: Python
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  POETRY_HOME: /opt/pypoetry
+  POETRY_VERSION: 1.5.1
+  POETRY_CACHE_DIR: ~/.cache/pypoetry
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.POETRY_HOME }}
+            ${{ env.POETRY_CACHE_DIR }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$POETRY_HOME/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: poetry install
+      - name: Run checks
+        run: |
+            poetry run black --check .
+            poetry run pflake8 .
+            poetry run isort --check .
+            poetry run mypy .
