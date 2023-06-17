@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ..ast import Stamps, Variable, VarStamps
+from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
 def match_stamps(
@@ -26,5 +26,17 @@ def apply_match(
     TODO
     マッチしたVariableを置き換える
     var_stampsに置換できなかったvariableがあったらNoneを返す
+    """
+    raise NotImplementedError
+
+
+def contextful_match(
+    pre_match: dict[Variable, Stamps],
+    condition: VarSingleStatement,
+    declarations: set[Stamps],
+) -> list[dict[Variable, Stamps]]:
+    """
+    TODO
+    既にvariableのマッチpre_matchが定まっている中で、declarationsに対してconditionがマッチするパターン全てを列挙する
     """
     raise NotImplementedError
