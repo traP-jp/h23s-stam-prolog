@@ -4,7 +4,7 @@
     "python.linting.enabled": true,
     "editor.formatOnSave": true,
     "python.formatting.blackPath": ".venv/bin/black",
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "none",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.addImport.exactMatchOnly": true,
     "python.linting.lintOnSave": true,
@@ -15,6 +15,7 @@
     "[python]": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
-        }
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter"
     }
 }
