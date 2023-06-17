@@ -1,8 +1,8 @@
 import re
-from typing import List
+from typing import Union
 
 
-def extract_stamps(src: str) -> List[str]:
+def extract_stamps(src: str) -> list[str]:
     """
     メッセージ文字列(src)からスタンプのみを抽出する
     ex. "@BOT_stamProlog :technologist: :heart::computer:\n:ton:"
@@ -25,14 +25,24 @@ def extract_stamps(src: str) -> List[str]:
     return list_stamp
 
 
-def split_sentences(src: List[str]) -> List[List[str]]:
+def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
     """
-    TODO
-    スタンプ列を分ごとに分割する
+    スタンプ列を文ごとに分割する
     ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
     -> [
         ":technologist: :heart: :computer: :ton:".split(),
         ":heart: :computer: :ton:".split()
     ]
     """
-    raise NotImplementedError
+    l: list[list[str]] = [[]]
+    i = 0
+    for s in src:
+        l[i].append(s)
+        if s == ":ton:" or s == ":hatena:":
+            i += 1
+            l.append([])
+    last = l.pop()
+    if last == []:
+        return l
+    else:
+        return "構文エラー: :ton:または:hatena:で文が終わっていません"
