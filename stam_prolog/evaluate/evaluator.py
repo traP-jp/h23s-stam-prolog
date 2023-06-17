@@ -1,5 +1,7 @@
 from typing import Optional
 
+from frozenlist import FrozenList
+
 from ..ast import (
     ConditionalStatement,
     QueryStatement,
@@ -8,7 +10,7 @@ from ..ast import (
     Variable,
     VarSingleStatement,
 )
-from .match import match_stamps
+from .match import apply_match, match_stamps
 
 
 class Evaluator:
@@ -24,12 +26,26 @@ class Evaluator:
         declarationsにstatementを追加する
         cond_declarationsを見て、条件に合致するものがあれば、そのthenを追加する
         """
+        if self.__errored:
+            return
         # これ冪等なので何回もやってる
         statement.freeze()
         if statement in self.__declarations:
             return
         self.__declarations.add(statement)
-        # TODO
+        for c_decl in self.__cond_declarations:
+            replace = self._match_condition(c_decl.condition)
+            if replace is None:
+                continue
+            # replaceを適用してthenを追加する
+            replaced = list(apply_match(replace, t) for t in c_decl.then)
+            if any(r is None for r in replaced):
+                self.__errored = True
+                return
+            for r in replaced:
+                # 上のanyで確認したのでここではassertで良い
+                assert r is not None
+                self._add_statement(FrozenList(r))
 
     def _match_condition(
         self, condition: VarSingleStatement
