@@ -9,7 +9,7 @@ class Evaluator:
         self.__cond_declarations: set[ConditionalStatement] = set()
         self.__errored = False
 
-    def eval_decl_statement(self, statement: DeclStatement) -> None:
+    def eval_single_statement(self, statement: SingleStatement) -> None:
         if self.__errored:
             return
         self.__declarations.add(statement)
