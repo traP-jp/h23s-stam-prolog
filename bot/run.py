@@ -9,7 +9,3 @@ def main() -> None:
     handler = Handler(env.bot_access_token)
     bot.message_created(handler.on_message_created)
     bot.run(8080)
-
-
-if __name__ == "__main__":
-    main()
