@@ -1,5 +1,5 @@
 from . import stamps, statement
-from .stamps import Stamp, Stamps, Variable, VarStamps
+from .stamps import Atom, Stamp, Stamps, Variable, VarStamps
 from .statement import (
     ConditionalStatement,
     DeclStatement,
@@ -11,6 +11,7 @@ from .statement import (
 __all__ = [
     "stamps",
     "statement",
+    "Atom",
     "Stamp",
     "Stamps",
     "Variable",
