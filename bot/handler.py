@@ -1,7 +1,7 @@
 import json
 from typing import Any, Optional
 
-from traq import ApiClient
+from traq import ApiClient, Configuration
 from traq.api.message_api import MessageApi
 from traq.model.post_message_request import PostMessageRequest
 
@@ -10,7 +10,7 @@ class Handler:
     __slots__ = ("__client",)
 
     def __init__(self, access_token: str):
-        self.__client = ApiClient(access_token)
+        self.__client = ApiClient(Configuration(access_token))
 
     def send_message(self, channel_id: str, message: str) -> Any:
         message_api = MessageApi(self.__client)
