@@ -1,5 +1,4 @@
-from typing import List
-from typing import Union
+from typing import List, Union
 
 
 def extract_stamps(src: str) -> List[str]:
@@ -22,7 +21,7 @@ def split_sentences(src: List[str]) -> Union[List[List[str]], str]:
         ":heart: :computer: :ton:".split()
     ]
     """
-    l: list[list[str]] = []
+    l: List[List[str]] = []
     i = 0
     l.append([])
     for s in src:
