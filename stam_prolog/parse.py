@@ -1,7 +1,7 @@
-from typing import List, Union
+from typing import Union
 
 
-def extract_stamps(src: str) -> List[str]:
+def extract_stamps(src: str) -> list[str]:
     """
     TODO
     メッセージ文字列(src)からスタンプのみを抽出する
@@ -11,17 +11,17 @@ def extract_stamps(src: str) -> List[str]:
     raise NotImplementedError
 
 
-def split_sentences(src: List[str]) -> Union[List[List[str]], str]:
+def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
     """
     TODO
-    スタンプ列を分ごとに分割する ←文ごと?
+    スタンプ列を文ごとに分割する
     ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
     -> [
         ":technologist: :heart: :computer: :ton:".split(),
         ":heart: :computer: :ton:".split()
     ]
     """
-    l: List[List[str]] = []
+    l: list[list[str]] = []
     i = 0
     l.append([])
     for s in src:
@@ -34,4 +34,4 @@ def split_sentences(src: List[str]) -> Union[List[List[str]], str]:
     if l[-1][-1] == ":ton:" or l[-1][-1] == ":hatena:":
         return l
     else:
-        return "error"
+        return "構文エラー: :ton:または:hatena:で文が終わっていません"
