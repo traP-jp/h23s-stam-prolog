@@ -4,7 +4,6 @@ import re
 
 def extract_stamps(src: str) -> List[str]:
     """
-    TODO
     メッセージ文字列(src)からスタンプのみを抽出する
     ex. "@BOT_stamProlog :technologist: :heart::computer:\n:ton:"
     -> ":technologist: :heart: :computer: :ton:".split()
@@ -17,7 +16,7 @@ def extract_stamps(src: str) -> List[str]:
             check = False
             continue
         now_string = list_string[i]
-        m = re.fullmatch(r"@?[0-9a-zA-Z_-]+(.[a-zA-Z_-]+){0,6}", now_string)
+        m = re.fullmatch(r"@?[0-9a-zA-Z_-]+(\.[a-zA-Z]_-){0,6}", now_string)
         if m is None:
             continue
         else:
