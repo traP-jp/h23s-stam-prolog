@@ -1,4 +1,4 @@
 from .env import Env
-from .responder import Responder
+from .handler import Handler
 
-__all__ = ["Responder", "Env"]
+__all__ = ["Handler", "Env"]

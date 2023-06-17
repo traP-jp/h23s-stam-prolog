@@ -5,7 +5,7 @@ from traq.api.message_api import MessageApi
 from traq.model.post_message_request import PostMessageRequest
 
 
-class Responder:
+class Handler:
     __slots__ = ("__client",)
 
     def __init__(self, access_token: str):
