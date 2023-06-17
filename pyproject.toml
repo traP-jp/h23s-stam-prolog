@@ -11,7 +11,7 @@ bot = 'bot.run:main'
 
 [tool.poetry.dependencies]
 python = "^3.11"
-traq-bot = "^1.0.3"
+traq-bot = {git = "https://github.com/detteiu8383/python-traq-bot.git"}
 traq = "^3.9.1.post0"
 python-dotenv = "^1.0.0"
 

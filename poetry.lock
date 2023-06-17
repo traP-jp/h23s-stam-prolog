@@ -350,11 +350,15 @@ name = "traq-bot"
 version = "1.0.3"
 description = "Bot library for traQ"
 optional = false
-python-versions = ">=3.9.5,<4.0.0"
-files = [
-    {file = "traq_bot-1.0.3-py3-none-any.whl", hash = "sha256:84425c241e162cc40ff329476b998b45f8b923e10850abe08e6d90a53293cfeb"},
-    {file = "traq_bot-1.0.3.tar.gz", hash = "sha256:19fdd7659448af66565eb4cd65c23e1f8da7f21b0a0a404f26fc0c24930561c9"},
-]
+python-versions = "^3.9.5"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/detteiu8383/python-traq-bot.git"
+reference = "HEAD"
+resolved_reference = "59036e3d851312c48aef5965965c306b554670ca"
 
 [[package]]
 name = "typing-extensions"
@@ -387,4 +391,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "dd79afd100bc59f17225e61bee88bcc3a535b9210eb9851c3e009c947c096da9"
+content-hash = "c78c6866e65a06f23ae1837021587c5d1651054797b7953882e7851fdb598a4d"
