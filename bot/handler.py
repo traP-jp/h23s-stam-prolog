@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from traq import ApiClient
@@ -16,3 +17,13 @@ class Handler:
         req = PostMessageRequest(message)
         res = message_api.post_message(channel_id, post_message_request=req)
         return res
+
+    def on_message_created(self, payload: dict) -> None:
+        print(json.dumps(payload, indent=2))
+        message = payload.get("message", None)
+        if not isinstance(message, dict):
+            print("unexpected input")
+            return
+        # ここでメッセージを処理する
+        res = message["plainText"]
+        self.send_message(message["channelId"], res)
