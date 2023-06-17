@@ -4,8 +4,6 @@ from typing import Union
 
 from stam_prolog.ast import *
 
-from .parse_math import *
-
 
 def extract_stamps(src: str) -> list[str]:
     """
@@ -143,6 +141,7 @@ class Parser:
         # TODO: 数字と普通のスタンプがあったときの例外
         var_sentence_match = re.match(":[a-z]:")
         if num_sentence_match:
+            from stam_prolog.parse_math import *
             #expr_parser
             #TODO: mathのparse
         elif not(var_sentence_match):
