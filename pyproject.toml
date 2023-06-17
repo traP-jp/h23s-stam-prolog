@@ -6,6 +6,9 @@ authors = ["H1rono"]
 readme = "README.md"
 packages = [{ include = "stam_prolog" }, { include = "bot" }]
 
+[tool.poetry.scripts]
+bot = 'bot.run:main'
+
 [tool.poetry.dependencies]
 python = "^3.11"
 traq-bot = "^1.0.3"
