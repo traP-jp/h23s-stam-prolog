@@ -30,7 +30,7 @@ class Handler:
             print("unexpected input", file=stderr)
             return
         # ここでメッセージを処理する
-        res = message.get("content", None)
+        res = message.get("plainText", None)
         if not isinstance(res, str):
             print("unexpected input", file=stderr)
             return
