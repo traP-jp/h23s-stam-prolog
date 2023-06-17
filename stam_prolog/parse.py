@@ -1,29 +1,54 @@
+import re
+from typing import Union
 from ast import *
-from curses import tparm
-from typing import Optional
+from winreg import QueryInfoKey
 
+from stam_prolog.ast.statement import DeclStatement, QueryStatement, VarSingleStatement
 
 def extract_stamps(src: str) -> list[str]:
     """
-    TODO
     メッセージ文字列(src)からスタンプのみを抽出する
     ex. "@BOT_stamProlog :technologist: :heart::computer:\n:ton:"
     -> ":technologist: :heart: :computer: :ton:".split()
     """
-    raise NotImplementedError
+    list_stamp = []
+    list_string = src.split(":")
+    check = False
+    for i in range(1, len(list_string) - 1):
+        if check:
+            check = False
+            continue
+        now_string = list_string[i]
+        m = re.fullmatch(r"@?[0-9a-zA-Z_-]+(\.[a-zA-Z_-]){0,6}", now_string)
+        if m is None:
+            continue
+        else:
+            list_stamp.append(":" + list_string[i] + ":")
+            check = True
+    return list_stamp
 
 
-def split_sentences(src: list[str]) -> List[List[str]]:
+def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
     """
-    TODO
-    スタンプ列を分ごとに分割する
+    スタンプ列を文ごとに分割する
     ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
     -> [
         ":technologist: :heart: :computer: :ton:".split(),
         ":heart: :computer: :ton:".split()
     ]
     """
-    raise NotImplementedError
+    l: list[list[str]] = [[]]
+    i = 0
+    for s in src:
+        l[i].append(s)
+        if s == ":ton:" or s == ":hatena:":
+            i += 1
+            l.append([])
+    last = l.pop()
+    if last == []:
+        return l
+    else:
+        return "構文エラー: :ton:または:hatena:で文が終わっていません"
 
 class TreeNode:
     def __init__(self):
@@ -38,38 +63,62 @@ class TreeNode:
         self.value = value
 
 
-#class BinaryTree:
-#    def __init__(self) -> None:
-#        self.root = None
-#    @classmethod
-#    def new(cls, type : str, value: Optional[int | str]) -> None:
-#        cls.root = TreeNode(type, value)
-
 class parser:
-    def statement_parser(src: list[str]) -> TreeNode:
+    @classmethod
+    def statement_parser(cls, src: list[str]) -> TreeNode:
         _tree = TreeNode()
         if ":hatena:" in src:
-            _tree = TreeNode.new("queryop", "?")
-            _tree.left = stamps_parser()
-            _tree.right = None
-            return _tree
-        elif ":ton:" in src:
-            _tree.root = TreeNode.new("declop", ".")
-            _tree.right = None
-            return _tree
-        else:
-            return self.stamps_parser(src)
-    def statement_parser(src: list[str]) -> TreeNode:
+            return cls.query_statement_parser(src);
+        if ":ton" in src:
+            return cls.decl_statement_parser(src);
+
+    @classmethod
+    def decl_statement_parser(cls, sentence: DeclStatement):
         _tree = TreeNode()
-        if ":arrow_right:" in src:
-            _tree = TreeNode.new("operand", "->")
-            _tree.left = stamps_parser()
-            _tree.right = stamps_parser()
-            return _tree
-        elif ":and:" in src:
-            _tree.root = TreeNode.new("boolop", "and")
+        _tree.value = sentence
+        sentence = sentence[:-1]
+        if ":right_arrow:" in sentence:
+            splited_sentence = sentence.split(":right_arrow:", 1)
+            if splited_sentence[0] == '0' or splited_sentence[1] == '':
+                raise SyntaxError("矢印の前後の文法が不適切です")
+            _tree.left = cls.var_single_statement_parser(splited_sentence[0]);
+            _tree.right = cls.var_single_statement_parser(splited_sentence[1]);
         else:
-            return self.stamps_parser(src)
+            _tree.left = cls.var_single_statement_parser(sentence);
+        return _tree;
+
+    @classmethod
+    def decl_statement_parser(cls, sentence: QueryStatement):
+        _tree = TreeNode()
+        _tree.value = sentence
+        sentence = sentence[:-1]
+        if ":right_arrow:" in sentence:
+            splited_sentence = sentence.split(":right_arrow:", 1)
+            if splited_sentence[0] == '0' or splited_sentence[1] == '':
+                raise SyntaxError("矢印の前後の文法が不適切です")
+            _tree.left = cls.var_single_statement_parser(splited_sentence[0]);
+            _tree.right = cls.var_single_statement_parser(splited_sentence[1]);
+            return _tree;
+        else:
+            _tree.left = cls.var_single_statement_parser(sentence);
+        return _tree;
+
+    @classmethod
+    def var_single_statement_parser(cls, sentence: VarSingleStatement):
+        _tree = TreeNode()
+        _tree.value = sentence
+        if ":right_arrow:" in sentence:
+            raise SyntaxError("矢印の前後の文法が不適切です")
+        if ":and:" in sentence:
+            splited_sentence = sentence.split(":and:", 1)
+            if splited_sentence[0] == '0' or splited_sentence[1] == '':
+                    raise SyntaxError(":and:の前後の文法が不適切です")
+            _tree.left = cls.var_stamps_parser(splited_sentence[0]);
+            _tree.right = cls.var_single_statement_parser(splited_sentence[1]);
+            return _tree
+        else:
+            _tree.left = cls.var_stamps_parser(sentence);
+            return _tree
 
     def stamps_parser(src: list[str]) -> TreeNode:
         if ":arrow_right:" in src:
