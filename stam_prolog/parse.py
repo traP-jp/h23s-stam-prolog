@@ -22,7 +22,7 @@ def split_sentences(src: List[str]) -> Union[List[List[str]], str]:
         ":heart: :computer: :ton:".split()
     ]
     """
-    l : list[list[str]] = []
+    l: list[list[str]] = []
     i = 0
     l.append([])
     for s in src:
