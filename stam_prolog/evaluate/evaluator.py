@@ -8,13 +8,13 @@ class Evaluator:
         self.__declarations: set[DeclStatement] = set()
         self.__cond_declarations: set[ConditionalStatement] = set()
 
-    def eval_decl_statement(self, sentence: DeclStatement) -> None:
-        ...
+    def eval_decl_statement(self, statement: DeclStatement) -> None:
+        self.__declarations.add(statement)
 
-    def eval_conditional_statement(self, sentence: ConditionalStatement) -> None:
-        ...
+    def eval_conditional_statement(self, statement: ConditionalStatement) -> None:
+        self.__cond_declarations.add(statement)
 
-    def eval_query_statement(self, sentence: QueryStatement) -> None:
+    def eval_query_statement(self, statement: QueryStatement) -> None:
         ...
 
     def get_output(self) -> str:
