@@ -1,7 +1,5 @@
 from typing import Optional
 
-from frozenlist import FrozenList
-
 from ..ast import (
     ConditionalStatement,
     QueryStatement,
@@ -45,7 +43,7 @@ class Evaluator:
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
-                self._add_statement(FrozenList(r))
+                self._add_statement(r)
 
     def _match_condition(
         self, condition: VarSingleStatement
