@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Union
 
+from .math import Expression
+
 
 @dataclass(frozen=True)
 class Stamp:
@@ -12,7 +14,7 @@ class Variable:
     name: str
 
 
-# TODO: math.Expressionを追加する
 # immutableにしたいが厳しいかも
-Stamps = list[Stamp]
-VarStamps = list[Union[Stamp, Variable]]
+Atom = Union[Stamp, Expression]
+Stamps = list[Atom]
+VarStamps = list[Union[Atom, Variable]]

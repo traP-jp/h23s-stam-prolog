@@ -1,5 +1,5 @@
-from platform import architecture
 import re
+from platform import architecture
 from typing import Union
 
 from stam_prolog.ast import *
@@ -142,21 +142,13 @@ class Parser:
         var_sentence_match = re.match(":[a-z]:")
         if num_sentence_match:
             from stam_prolog.parse_math import *
-            #expr_parser
-            #TODO: mathのparse
-        elif not(var_sentence_match):
+
+            # expr_parser
+            # TODO: mathのparse
+        elif not (var_sentence_match):
             _tree.left = cls.stamps_parser(sentence)
         return _tree
 
     def stamps_parser(sentence: Stamps) -> TreeNode:
         _tree = TreeNode()
         _tree = TreeNode.new(sentence)
-
-
-
-
-
-
-
-
-
