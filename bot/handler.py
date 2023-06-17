@@ -19,19 +19,17 @@ class Handler:
         return res
 
     def on_message_created(self, payload: Optional[Dict]) -> None:
-        from sys import stderr
-
         if not payload:
-            print("[on_message_created] payload is None", file=stderr)
+            print("[on_message_created] payload is None")
             return
-        print(json.dumps(payload, indent=2), file=stderr)
+        print(json.dumps(payload, indent=2))
         message = payload.get("message", None)
         if not isinstance(message, dict):
-            print("unexpected input", file=stderr)
+            print("unexpected input")
             return
         # ここでメッセージを処理する
         res = message.get("plainText", None)
         if not isinstance(res, str):
-            print("unexpected input", file=stderr)
+            print("unexpected input")
             return
         self.send_message(message.get("channelId", None), res)
