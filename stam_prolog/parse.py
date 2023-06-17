@@ -1,5 +1,6 @@
 from typing import List
 
+import re
 
 def extract_stamps(src: str) -> List[str]:
     """
@@ -8,30 +9,21 @@ def extract_stamps(src: str) -> List[str]:
     ex. "@BOT_stamProlog :technologist: :heart::computer:\n:ton:"
     -> ":technologist: :heart: :computer: :ton:".split()
     """
-    src_size = len(src)
-    is_in_stamp = False
     list_stamp = []
-    now_stamp = ""
-    
-    for i in range(src_size):
-        if src[i] == ":":
-            if is_in_stamp:
-                is_in_stamp = False
-                list_stamp.append(now_stamp)
-                now_stamp = ""
-            else:
-                is_in_stamp = True
-        elif not is_in_stamp:
+    list_string = src.split(":")
+    check = False
+    for i in range(1,len(list_string)-1):
+        if check:
+            check = False
             continue
-        elif ("0" <= src[i] and src[i] <= "9") or ("a" <= src[i] and src[i] <= "z") or ("A" <= src[i] and src[i] <= "Z") or src[i] == "_" or src[i] == "-" or src[i] == ".":
-            now_stamp += src[i]
+        now_string = list_string[i]
+        m = re.fullmatch(r"@?[0-9a-zA-Z_-]+(.[a-zA-Z_-]+){0,6}", now_string)
+        if m is None:
+            continue
         else:
-            is_in_stamp = False
-            now_stamp = ""
-    
+            list_stamp.append(":" + list_string[i] + ":")
+            check = True
     return list_stamp
-    raise NotImplementedError
-
 
 def split_sentences(src: List[str]) -> List[List[str]]:
     """
