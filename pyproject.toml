@@ -8,6 +8,9 @@ packages = [{ include = "stam_prolog" }, { include = "bot" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+traq-bot = "^1.0.3"
+traq = "^3.9.1.post0"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pyproject-flake8 = "^6.0.0.post1"
