@@ -16,4 +16,4 @@ class ConditionalStatement:
 
 
 QueryStatement = Union[VarSingleStatement, ConditionalStatement]
-DeclStatement = Union[VarSingleStatement, ConditionalStatement]
+DeclStatement = Union[SingleStatement, ConditionalStatement]

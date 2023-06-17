@@ -2,7 +2,17 @@ import re
 from platform import architecture
 from typing import Union
 
-from stam_prolog.ast import *
+from stam_prolog.ast import (
+    DeclStatement,
+    QueryStatement,
+    Atom,
+    Variable,
+    Stamps,
+    VarStamps,
+    VarSingleStatement,
+    ConditionalStatement,
+)
+from stam_prolog.ast.statement import SingleStatement
 
 
 def extract_stamps(src: str) -> list[str]:
@@ -51,75 +61,89 @@ def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
         return "構文エラー: :ton:または:hatena:で文が終わっていません"
 
 
-class TreeNode:
-    def __init__(self):
-        self.value = None
-        self.parent = None
-        self.left = None
-        self.right = None
-
-    @classmethod
-    def new(self, value) -> None:
-        self.value = value
-
-
 class Parser:
     @classmethod
-    def statement_parser(cls, src: list[str]) -> TreeNode:
+    def statement_parser(cls, src: list[str]) -> Union[DeclStatement, QueryStatement]:
         if ":hatena:" in src:
             return cls.query_statement_parser(src)
-        if ":ton" in src:
+        elif ":ton:" in src:
             return cls.decl_statement_parser(src)
+        else:
+            raise SyntaxError("構文エラー: 不明なエラー")
 
     @classmethod
-    def decl_statement_parser(cls, sentence: DeclStatement):
-        _tree = TreeNode()
-        _tree = TreeNode.new(sentence)
+    def decl_statement_parser(cls, sentence: list[str]) -> DeclStatement:
         sentence = sentence[:-1]
         if ":right_arrow:" in sentence:
-            splited_sentence = sentence.split(":right_arrow:", 1)
-            if splited_sentence[0] == "0" or splited_sentence[1] == "":
-                raise SyntaxError("矢印の前後の文法が不適切です")
-            _tree.left = cls.var_single_statement_parser(splited_sentence[0])
-            _tree.right = cls.var_single_statement_parser(splited_sentence[1])
+            return cls.conditional_statement_parser(sentence)
         else:
-            _tree.left = cls.var_single_statement_parser(sentence)
-        return _tree
+            return cls.single_statement_parser(sentence)
 
     @classmethod
-    def decl_statement_parser(cls, sentence: QueryStatement):
-        _tree = TreeNode()
-        _tree = TreeNode.new(sentence)
+    def query_statement_parser(cls, sentence: list[str]) -> QueryStatement:
         sentence = sentence[:-1]
         if ":right_arrow:" in sentence:
-            splited_sentence = sentence.split(":right_arrow:", 1)
-            if splited_sentence[0] == "0" or splited_sentence[1] == "":
-                raise SyntaxError("矢印の前後の文法が不適切です")
-            _tree.left = cls.var_single_statement_parser(splited_sentence[0])
-            _tree.right = cls.var_single_statement_parser(splited_sentence[1])
-            return _tree
+            return cls.conditional_statement_parser(sentence)
         else:
-            _tree.left = cls.var_single_statement_parser(sentence)
-        return _tree
+            return cls.var_single_statement_parser(sentence)
 
     @classmethod
-    def var_single_statement_parser(cls, sentence: VarSingleStatement):
-        _tree = TreeNode()
-        _tree = TreeNode.new(sentence)
-        if ":right_arrow:" in sentence:
-            raise SyntaxError("矢印の前後の文法が不適切です")
-        if ":and:" in sentence:
-            splited_sentence = sentence.split(":and:", 1)
-            if splited_sentence[0] == "0" or splited_sentence[1] == "":
-                raise SyntaxError(":and:の前後の文法が不適切です")
-            _tree.left = cls.var_stamps_parser(splited_sentence[0])
-            _tree.right = cls.var_single_statement_parser(splited_sentence[1])
-            return _tree
-        else:
-            _tree.left = cls.var_stamps_parser(sentence)
-            return _tree
+    def conditional_statement_parser(cls, sentence: list[str]) -> ConditionalStatement:
+        if sentence.count(":right_arrow:") >= 2:
+            raise SyntaxError("構文エラー: 一つの文に矢印が二つ以上あります")
+        _condition, _then = [], []
+        _tmp: list[str] = []
+        for value in sentence:
+            if value == ":right_arrow:":
+                _condition = _tmp
+                _tmp = []
+            else:
+                _tmp.append(value)
+        _then = _tmp
+        if _condition == [] or _then == []:
+            raise SyntaxError("構文エラー: 矢印の位置が不適切です")
+        _statement = ConditionalStatement(
+            condition=cls.var_single_statement_parser(_condition),
+            then=cls.var_single_statement_parser(_then),
+        )
+        return _statement
 
-    def var_stamps_parser(sentence: VarStamps) -> TreeNode:
+
+# TODO exprの扱いを実装
+"""
+    @classmethod
+    def single_statement_parser(cls, sentence: list[str]) -> SingleStatement:
+        _stamps_list = []
+        _tmp: Stamps = []
+        for value in sentence:
+            if value == ":and:":
+                _stamps_list.append(_tmp)
+                _tmp = []
+            else:
+                _tmp.append(cls.atom_parser(value))
+        if _tmp != []:
+            _stamps_list.append(_tmp)
+        return _stamps_list
+
+
+    @classmethod
+    def var_single_statement_parser(cls, sentence: list[str]) -> SingleStatement:
+        _var_stamps_list = []
+        _tmp: VarStamps = []
+        for value in sentence:
+            if value == ":and:":
+                _stamps_list.append(_tmp)
+                _tmp = []
+            else:
+                _tmp.append(cls.atom_parser(value))
+        if _tmp != []:
+            _stamps_list.append(_tmp)
+        return _stamps_list
+
+    @classmethod atom_parser(cls, sentence: list[str]) -> Atom:
+
+    @classmethod
+    def var_stamps_parser(sentence: list[str]) -> TreeNode:
         __math_stamp_list = {
             "zero": "0",
             "one": "1",
@@ -133,22 +157,18 @@ class Parser:
             "nine": "9",
         }
         _tree = TreeNode()
-        _tree = TreeNode.new(sentence)
+        _tree.set(sentence)
         num_sentence_match = None
         for keys in __math_stamp_list.keys():
             if keys in VarStamps:
                 num_sentence_match = __math_stamp_list[keys]
         # TODO: 数字と普通のスタンプがあったときの例外
         var_sentence_match = re.match(":[a-z]:")
-        if num_sentence_match:
-            from stam_prolog.parse_math import *
+        # if num_sentence_match:
+        # from stam_prolog.parse_math import *
 
-            # expr_parser
-            # TODO: mathのparse
-        elif not (var_sentence_match):
-            _tree.left = cls.stamps_parser(sentence)
-        return _tree
-
-    def stamps_parser(sentence: Stamps) -> TreeNode:
-        _tree = TreeNode()
-        _tree = TreeNode.new(sentence)
+        # expr_parser
+        # TODO: mathのparse
+        ##elif not (var_sentence_match):
+        #   _tree.left = cls.stamps_parser(sentence)
+"""
