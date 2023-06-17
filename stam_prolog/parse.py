@@ -1,4 +1,5 @@
 from typing import List
+from typing import Union
 
 
 def extract_stamps(src: str) -> List[str]:
@@ -11,7 +12,7 @@ def extract_stamps(src: str) -> List[str]:
     raise NotImplementedError
 
 
-def split_sentences(src: List[str]) -> List[List[str]]:
+def split_sentences(src: List[str]) -> Union[List[List[str]], str]:
     """
     TODO
     スタンプ列を分ごとに分割する ←文ごと?
@@ -21,15 +22,17 @@ def split_sentences(src: List[str]) -> List[List[str]]:
         ":heart: :computer: :ton:".split()
     ]
     """
-    numc = 0
-    for s in src:
-        if s == ":ton:" or s == ":hatena:":
-            numc += 1
-    l : list[list[str]] = [[] for i in range(numc)]
+    l : list[list[str]] = []
     i = 0
+    l.append([])
     for s in src:
         l[i].append(s)
         if s == ":ton:" or s == ":hatena:":
             i += 1
-    return l
-    raise NotImplementedError
+            l.append([])
+    if l[-1] == []:
+        l.pop()
+    if l[-1][-1] == ":ton:" or l[-1][-1] == ":hatena:":
+        return l
+    else:
+        return "error"
