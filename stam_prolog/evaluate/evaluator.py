@@ -1,4 +1,14 @@
-from ..ast import ConditionalStatement, QueryStatement, SingleStatement, Stamps
+from typing import Optional
+
+from ..ast import (
+    ConditionalStatement,
+    QueryStatement,
+    SingleStatement,
+    Stamps,
+    Variable,
+    VarSingleStatement,
+)
+from .match import match_stamps
 
 
 class Evaluator:
@@ -20,6 +30,37 @@ class Evaluator:
             return
         self.__declarations.add(statement)
         # TODO
+
+    def _match_condition(
+        self, condition: VarSingleStatement
+    ) -> Optional[dict[Variable, Stamps]]:
+        """
+        現在のdeclarationsに対して、conditionがマッチするかどうかを判定する
+        返り値は.match.match_stampsと同じ
+        """
+        if self.__errored:
+            return None
+        # condition内のvarstamps全てがdeclarationsにマッチするように置き換えを構成する
+        result: dict[Variable, Stamps] = {}
+        for c in condition:
+            m: Optional[dict[Variable, Stamps]] = None
+            for d in self.__declarations:
+                m = match_stamps(d, c)
+                if not isinstance(m, dict):
+                    # マッチしなかったら次のdeclarationsを見る
+                    continue
+                # 既存の置き換えと矛盾しないか確認する
+                proper_match = True
+                for k, v in m.items():
+                    if k in result and result[k] != v:
+                        proper_match = False
+                        break
+                if proper_match:
+                    break
+            if not isinstance(m, dict):
+                return None
+            result.update(m)
+        return result
 
     def eval_single_statement(self, statement: SingleStatement) -> None:
         if self.__errored:
