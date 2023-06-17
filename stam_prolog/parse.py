@@ -1,6 +1,5 @@
-from typing import List
-
 import re
+from typing import List
 
 
 def extract_stamps(src: str) -> List[str]:
