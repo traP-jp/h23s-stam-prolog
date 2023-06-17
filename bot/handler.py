@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 from traq import ApiClient, Configuration
 from traq.api.message_api import MessageApi
@@ -18,7 +18,7 @@ class Handler:
         res = message_api.post_message(channel_id, post_message_request=req)
         return res
 
-    def on_message_created(self, payload: Optional[dict]) -> None:
+    def on_message_created(self, payload: Optional[Dict]) -> None:
         from sys import stderr
 
         if not payload:
