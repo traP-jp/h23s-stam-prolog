@@ -28,5 +28,8 @@ class Handler:
             print("unexpected input")
             return
         # ここでメッセージを処理する
-        res = message["plainText"]
-        self.send_message(message["channelId"], res)
+        res = message.get("content", None)
+        if not isinstance(res, str):
+            print("unexpected input")
+            return
+        self.send_message(message.get("channelId", None), res)
