@@ -1,4 +1,4 @@
-from ..ast import Stamps, VarStamps, Variable
+from ..ast import Stamps, Variable, VarStamps
 
 
 def match_stamps(stamps: Stamps, var_stamps: VarStamps) -> bool:
