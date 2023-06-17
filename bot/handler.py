@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Optional
 
 from traq import ApiClient
 from traq.api.message_api import MessageApi
@@ -18,7 +18,10 @@ class Handler:
         res = message_api.post_message(channel_id, post_message_request=req)
         return res
 
-    def on_message_created(self, payload: dict) -> None:
+    def on_message_created(self, payload: Optional[dict]) -> None:
+        if not payload:
+            print("[on_message_created] payload is None")
+            return
         print(json.dumps(payload, indent=2))
         message = payload.get("message", None)
         if not isinstance(message, dict):
