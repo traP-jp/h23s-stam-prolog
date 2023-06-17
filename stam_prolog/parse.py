@@ -12,26 +12,15 @@ def extract_stamps(src: str) -> list[str]:
 
 
 def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
-    """
-    TODO
-    スタンプ列を文ごとに分割する
-    ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
-    -> [
-        ":technologist: :heart: :computer: :ton:".split(),
-        ":heart: :computer: :ton:".split()
-    ]
-    """
-    l: list[list[str]] = []
+    l: list[list[str]] = [[]]
     i = 0
-    l.append([])
     for s in src:
         l[i].append(s)
         if s == ":ton:" or s == ":hatena:":
             i += 1
             l.append([])
-    if l[-1] == []:
-        l.pop()
-    if l[-1][-1] == ":ton:" or l[-1][-1] == ":hatena:":
+    last = l.pop()
+    if last == []:
         return l
     else:
         return "構文エラー: :ton:または:hatena:で文が終わっていません"
