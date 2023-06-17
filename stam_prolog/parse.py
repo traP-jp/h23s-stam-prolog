@@ -46,12 +46,25 @@ class TreeNode:
 #        cls.root = TreeNode(type, value)
 
 class parser:
-
+    def statement_parser(src: list[str]) -> TreeNode:
+        _tree = TreeNode()
+        if ":hatena:" in src:
+            _tree = TreeNode.new("queryop", "?")
+            _tree.left = stamps_parser()
+            _tree.right = None
+            return _tree
+        elif ":ton:" in src:
+            _tree.root = TreeNode.new("declop", ".")
+            _tree.right = None
+            return _tree
+        else:
+            return self.stamps_parser(src)
     def statement_parser(src: list[str]) -> TreeNode:
         _tree = TreeNode()
         if ":arrow_right:" in src:
             _tree = TreeNode.new("operand", "->")
-            _tree = TreeNode.append_left()
+            _tree.left = stamps_parser()
+            _tree.right = stamps_parser()
             return _tree
         elif ":and:" in src:
             _tree.root = TreeNode.new("boolop", "and")
