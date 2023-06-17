@@ -17,3 +17,14 @@ def match_stamps(
     そもそもマッチしなかったらNoneを返す
     """
     raise NotImplementedError
+
+
+def apply_match(
+    match: dict[Variable, Stamps], var_stamps: VarStamps
+) -> Optional[Stamps]:
+    """
+    TODO
+    マッチしたVariableを置き換える
+    var_stampsに置換できなかったvariableがあったらNoneを返す
+    """
+    raise NotImplementedError
