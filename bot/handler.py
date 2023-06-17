@@ -10,7 +10,7 @@ class Handler:
     __slots__ = ("__client",)
 
     def __init__(self, access_token: str):
-        self.__client = ApiClient(Configuration(access_token))
+        self.__client = ApiClient(Configuration(access_token=access_token))
 
     def send_message(self, channel_id: str, message: str) -> Any:
         message_api = MessageApi(self.__client)
