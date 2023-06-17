@@ -14,11 +14,22 @@ def extract_stamps(src: str) -> List[str]:
 def split_sentences(src: List[str]) -> List[List[str]]:
     """
     TODO
-    スタンプ列を分ごとに分割する
+    スタンプ列を分ごとに分割する ←文ごと?
     ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
     -> [
         ":technologist: :heart: :computer: :ton:".split(),
         ":heart: :computer: :ton:".split()
     ]
     """
+    numc = 0
+    for s in src:
+        if s == ":ton:" or s == ":hatena:":
+            numc += 1
+    l : list[list[str]] = [[] for i in range(numc)]
+    i = 0
+    for s in src:
+        l[i].append(s)
+        if s == ":ton:" or s == ":hatena:":
+            i += 1
+    return l
     raise NotImplementedError
