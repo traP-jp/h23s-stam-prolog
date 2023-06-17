@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from typing import Union
 
+from frozenlist import FrozenList
 from stamps import Stamps as _Stamps
 from stamps import VarStamps as _VarStamps
 
 # andで繋がっている
-SingleStatement = list[_Stamps]
-VarSingleStatement = list[_VarStamps]
+SingleStatement = FrozenList[_Stamps]
+VarSingleStatement = FrozenList[_VarStamps]
 
 
 @dataclass(frozen=True)
