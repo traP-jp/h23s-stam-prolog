@@ -19,6 +19,15 @@ def match_stamps(
     raise NotImplementedError
 
 
+def papply_match(match: dict[Variable, Stamps], var_stamps: VarStamps) -> VarStamps:
+    """
+    TODO
+    マッチしたVariableを置き換える
+    置換できなかったvariableはそのまま
+    """
+    raise NotImplementedError
+
+
 def apply_match(
     match: dict[Variable, Stamps], var_stamps: VarStamps
 ) -> Optional[Stamps]:
