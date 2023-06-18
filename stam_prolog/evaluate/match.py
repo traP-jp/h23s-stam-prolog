@@ -55,11 +55,11 @@ def match_stamps(
     返り値はどのVariableがどのようなスタンプ列に置き換えられるかを示す
     そもそもマッチしなかったらNoneを返す
     """
-    var = match_stamps_search(Stamps, VarStamps)
+    var = match_stamps_search(stamps, var_stamps)
     matched_dict: dict[Variable, Stamps] = {}
     for x in var:
         for i in range(x[1], x[2] + 1):
-            matched_dict[var_stamps[x[0]]].append(Stamps)
+            matched_dict[var_stamps[x[0]]].append(stamps)
     if len(matched_dict):
         return matched_dict
     else:
