@@ -5,11 +5,43 @@ from frozenlist import FrozenList
 from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
+def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]]:
+    length_stamps = len(stamps)
+    length_var_stamps = len(var_stamps)
+    is_in_var = False
+    var = []
+    var_begin = 0
+    var_cnt = sum(1 for stamp in var_stamps if type(stamp) is Variable)
+    var_seen = i = j = 0
+    while i < length_stamps:
+        if type(var_stamps[j]) is Variable:
+            var_seen += 1
+            if var_seen == var_cnt:
+                var.append([j, i, length_stamps - length_var_stamps + j])
+                i = length_stamps - (length_var_stamps - j - 1)
+            elif j == length_var_stamps - 1:
+                var.append([j, i, length_stamps - 1])
+            elif type(var_stamps[j + 1]) is Variable:
+                var.append([j, i, i])
+            else:
+                var_begin = i
+                is_in_var = True
+        elif is_in_var and stamps[i] == var_stamps[j]:
+            var.append([j - 1, var_begin, i - 1])
+            is_in_var = False
+        elif stamps[i] != var_stamps[j]:
+            break
+        j += 1
+        if j == length_var_stamps:
+            break
+        i += 1
+    return var
+
+
 def match_stamps(
     stamps: Stamps, var_stamps: VarStamps
 ) -> Optional[dict[Variable, Stamps]]:
     """
-    TODO
     スタンプがマッチするかどうかを判定する
     ex:
     stamps = [Stamp("technologist"), Stamp("heart"), Stamp("girl"), Stamp("computer")]
@@ -18,7 +50,17 @@ def match_stamps(
     返り値はどのVariableがどのようなスタンプ列に置き換えられるかを示す
     そもそもマッチしなかったらNoneを返す
     """
-    raise NotImplementedError
+    var = match_stamps_search(stamps, var_stamps)
+    matched_dict: dict[Variable, Stamps] = {}
+    for x in var:
+        for i in range(x[1], x[2] + 1):
+            v = var_stamps[x[0]]
+            if isinstance(v, Variable):
+                matched_dict[v].append(stamps[i])
+    if len(matched_dict):
+        return matched_dict
+    else:
+        return None
 
 
 def papply_match(match: dict[Variable, Stamps], var_stamps: VarStamps) -> VarStamps:
