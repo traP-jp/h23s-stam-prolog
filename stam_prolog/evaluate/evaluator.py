@@ -116,7 +116,7 @@ class Evaluator:
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
         if self.is_err():
             return
-        if all(not isinstance(s, Variable) for ss in statement for s in ss):
+        if not any(isinstance(s, Variable) for ss in statement for s in ss):
             # statementは変数を含まない
             res = all(s in self.__declarations for ss in statement for s in ss)
             self.__output += ":true:\n" if res else ":false:\n"
