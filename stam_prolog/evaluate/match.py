@@ -42,7 +42,6 @@ def match_stamps(
     stamps: Stamps, var_stamps: VarStamps
 ) -> Optional[dict[Variable, Stamps]]:
     """
-    TODO
     スタンプがマッチするかどうかを判定する
     ex:
     stamps = [Stamp("technologist"), Stamp("heart"), Stamp("girl"), Stamp("computer")]
@@ -55,8 +54,9 @@ def match_stamps(
     matched_dict: dict[Variable, Stamps] = {}
     for x in var:
         for i in range(x[1], x[2] + 1):
-            if type(var_stamps[x[0]]) is Variable:
-                matched_dict[var_stamps[x[0]]].append(stamps[i])
+            v = var_stamps[x[0]]
+            if isinstance(v, Variable):
+                matched_dict[v].append(stamps[i])
     if len(matched_dict):
         return matched_dict
     else:
