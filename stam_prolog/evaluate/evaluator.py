@@ -7,6 +7,7 @@ from ..ast import (
     Variable,
     VarSingleStatement,
 )
+from ..ast.stamps import to_str
 from .match import apply_match, contextful_match
 
 
@@ -110,7 +111,7 @@ class Evaluator:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
                 # ここstr(s)ではない
-                self.__output += "".join(str(s) for s in r) + "\n"
+                self.__output += "".join(to_str(s) for s in r) + "\n"
 
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
         if self.is_err():
@@ -130,7 +131,7 @@ class Evaluator:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
                 # ここstr(s)ではない
-                self.__output += "".join(str(s) for s in r) + "\n"
+                self.__output += "".join(to_str(s) for s in r) + "\n"
 
     def eval_query_statement(self, statement: QueryStatement) -> None:
         if self.is_err():
