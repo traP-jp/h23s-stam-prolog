@@ -118,7 +118,7 @@ class Evaluator:
             return
         if not any(isinstance(s, Variable) for ss in statement for s in ss):
             # statementは変数を含まない
-            res = all(s in self.__declarations for ss in statement for s in ss)
+            res = all(ss in self.__declarations for ss in statement)
             self.__output += ":true:\n" if res else ":false:\n"
             return
         m_all = contextful_match({}, statement, self.__declarations)
