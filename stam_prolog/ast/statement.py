@@ -5,6 +5,7 @@ from frozenlist import FrozenList
 
 from .stamps import Stamps as _Stamps
 from .stamps import VarStamps as _VarStamps
+from .stamps import to_str as _atom_to_str
 
 # andで繋がっている
 SingleStatement = FrozenList[_Stamps]
@@ -26,3 +27,9 @@ class ConditionalStatement:
 
 QueryStatement = Union[VarSingleStatement, ConditionalStatement]
 DeclStatement = Union[SingleStatement, ConditionalStatement]
+
+
+def to_str(statement: Union[DeclStatement, QueryStatement]) -> str:
+    if isinstance(statement, ConditionalStatement):
+        return f"{to_str(statement.condition)}:arrow_right:{to_str(statement.then)}"
+    return ":and:".join("".join(_atom_to_str(s) for s in ss) for ss in statement)
