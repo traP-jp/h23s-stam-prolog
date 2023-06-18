@@ -1,5 +1,3 @@
-from typing import Union
-
 from stam_prolog.ast.statement import DeclStatement
 
 from ..ast import (
@@ -20,16 +18,13 @@ class Err(str):
     pass
 
 
-Output = Union[Ok, Err]
-
-
 class Evaluator:
     __slots__ = ("__declarations", "__cond_declarations", "__output")
 
     def __init__(self) -> None:
         self.__declarations: set[Stamps] = set()
         self.__cond_declarations: set[ConditionalStatement] = set()
-        self.__output: Output = Ok("")
+        self.__output: str = Ok("")
 
     def is_err(self) -> bool:
         return isinstance(self.__output, Err)
@@ -113,8 +108,7 @@ class Evaluator:
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
-                # FIXME: stdoutに出力しても無駄
-                print(r)
+                self.__output += Ok("".join(str(s) for s in r))
 
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
         if self.is_err():
