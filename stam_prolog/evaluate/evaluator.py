@@ -54,7 +54,7 @@ class Evaluator:
             for replace in m_all:
                 replaced = list(apply_match(replace, t) for t in c.then)
                 if any(r is None for r in replaced):
-                    # self.is_err() = True マッチが足りなかっただけでエラーではない
+                    # TODO: エラーかどうか確かめる
                     return
                 for r in replaced:
                     # 上のanyで確認したのでここではassertで良い
@@ -75,7 +75,7 @@ class Evaluator:
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement.then)
             if any(r is None for r in replaced):
-                # self.is_err() = True マッチが足りなかっただけでエラーではない
+                # TODO: エラーかどうか確かめる
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
@@ -108,7 +108,7 @@ class Evaluator:
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement.then)
             if any(r is None for r in replaced):
-                # self.is_err() = True
+                # TODO: エラーかどうか確かめる
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
@@ -123,7 +123,7 @@ class Evaluator:
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement)
             if any(r is None for r in replaced):
-                # self.is_err() = True
+                # TODO: エラーかどうか確かめる
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
