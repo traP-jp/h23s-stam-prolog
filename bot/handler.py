@@ -34,5 +34,8 @@ class Handler:
         if not isinstance(msg, str):
             print("unexpected input")
             return
-        res = run(msg)
+        try:
+            res = run(msg)
+        except Exception as e:
+            res = str(e)
         self.send_message(message.get("channelId", None), res)
