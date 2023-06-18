@@ -57,7 +57,7 @@ class StatementParser:
         res: FrozenList[VarStamps] = FrozenList()
         kinds = self.judge_stamp_kinds(stamps)
         math_stack: list[tuple[StampKind, str]] = []
-        ss_stack: list[ast.Atom | ast.Variable] = []
+        ss_stack: FrozenList[ast.Atom | ast.Variable] = FrozenList()
         for k, s in zip(kinds, stamps):
             if k & (StampKind.MathNumber | StampKind.MathSign | StampKind.MathOperator):
                 math_stack.append((k, s))
@@ -69,16 +69,14 @@ class StatementParser:
                 ss_stack.append(ast.Variable(s))
                 continue
             if k & StampKind.And:
-                fl = FrozenList(ss_stack)
-                fl.freeze()
-                res.append(fl)
-                ss_stack = []
+                ss_stack.freeze()
+                res.append(ss_stack)
+                ss_stack = FrozenList()
                 continue
             ss_stack.append(ast.Stamp(s))
         if ss_stack:
-            fl = FrozenList(ss_stack)
-            fl.freeze()
-            res.append(fl)
+            ss_stack.freeze()
+            res.append(ss_stack)
         res.freeze()
         return res
 
@@ -87,7 +85,7 @@ class StatementParser:
         res_r: FrozenList[VarStamps] = FrozenList()
         kinds = self.judge_stamp_kinds(stamps)
         math_stack: list[tuple[StampKind, str]] = []
-        ss_stack: list[ast.Atom | ast.Variable] = []
+        ss_stack: FrozenList[ast.Atom | ast.Variable] = FrozenList()
         read_arrow = False
         for k, s in zip(kinds, stamps):
             if k & (StampKind.MathNumber | StampKind.MathSign | StampKind.MathOperator):
@@ -100,19 +98,17 @@ class StatementParser:
                 ss_stack.append(ast.Variable(s))
                 continue
             if k & StampKind.And:
-                fl = FrozenList(ss_stack)
-                fl.freeze()
+                ss_stack.freeze()
                 if read_arrow:
-                    res_r.append(fl)
+                    res_r.append(ss_stack)
                 else:
-                    res_l.append(fl)
-                ss_stack = []
+                    res_l.append(ss_stack)
+                ss_stack = FrozenList()
                 continue
             ss_stack.append(ast.Stamp(s))
         if ss_stack:
-            fl = FrozenList(ss_stack)
-            fl.freeze()
-            res_r.append(fl)
+            ss_stack.freeze()
+            res_r.append(ss_stack)
         return ast.ConditionalStatement.new(res_l, res_r)
 
     def parse(
