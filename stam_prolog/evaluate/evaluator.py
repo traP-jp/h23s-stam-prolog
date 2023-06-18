@@ -49,25 +49,23 @@ class Evaluator:
     def _add_cond_statement(self, statement: ConditionalStatement) -> None:
         """
         cond_declarationsにstatementを追加する
-        既存のdeclarationsとマッチするかどうかを確認して、マッチしたらthenを追加する
+        マッチを全て列挙→マッチ適用後を全てdeclに追加
         """
         if self.__errored:
             return
         if statement in self.__cond_declarations:
             return
         self.__cond_declarations.add(statement)
-        replace = self._match_condition(statement.condition)
-        if replace is None:
-            return
-        # replaceを適用してthenを追加する
-        replaced = list(apply_match(replace, t) for t in statement.then)
-        if any(r is None for r in replaced):
-            self.__errored = True
-            return
-        for r in replaced:
-            # 上のanyで確認したのでここではassertで良い
-            assert r is not None
-            self._add_statement(r)
+        m_all = contextful_match({}, statement.condition, self.__declarations)
+        for replace in m_all:
+            replaced = list(apply_match(replace, t) for t in statement.then)
+            if any(r is None for r in replaced):
+                self.__errored = True
+                return
+            for r in replaced:
+                # 上のanyで確認したのでここではassertで良い
+                assert r is not None
+                self._add_statement(r)
 
     def _match_condition(
         self, condition: VarSingleStatement
