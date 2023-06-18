@@ -5,6 +5,7 @@ from ..ast import (
     QueryStatement,
     SingleStatement,
     Stamps,
+    Variable,
     VarSingleStatement,
 )
 from .match import apply_match, contextful_match
@@ -108,10 +109,16 @@ class Evaluator:
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
-                self.__output += Ok("".join(str(s) for s in r))
+                # ここstr(s)ではない
+                self.__output = Ok(self.__output + "".join(str(s) for s in r) + "\n")
 
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
         if self.is_err():
+            return
+        if all(not isinstance(s, Variable) for ss in statement for s in ss):
+            # statementは変数を含まない
+            res = all(s in self.__declarations for ss in statement for s in ss)
+            self.__output += Ok(":true:\n" if res else ":false:\n")
             return
         m_all = contextful_match({}, statement, self.__declarations)
         for replace in m_all:
@@ -122,8 +129,8 @@ class Evaluator:
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
-                # FIXME
-                print(r)
+                # ここstr(s)ではない
+                self.__output = Ok(self.__output + "".join(str(s) for s in r) + "\n")
 
     def eval_query_statement(self, statement: QueryStatement) -> None:
         if self.is_err():
