@@ -1,6 +1,12 @@
 from stam_prolog.ast.statement import DeclStatement
 
-from ..ast import ConditionalStatement, QueryStatement, SingleStatement, Stamps
+from ..ast import (
+    ConditionalStatement,
+    QueryStatement,
+    SingleStatement,
+    Stamps,
+    VarSingleStatement,
+)
 from .match import apply_match, contextful_match
 
 
@@ -79,8 +85,43 @@ class Evaluator:
         else:
             self.eval_single_statement(statement)
 
+    def _eval_query_cnd_statement(self, statement: ConditionalStatement) -> None:
+        if self.__errored:
+            return
+        m_all = contextful_match({}, statement.condition, self.__declarations)
+        for replace in m_all:
+            replaced = list(apply_match(replace, t) for t in statement.then)
+            if any(r is None for r in replaced):
+                self.__errored = True
+                return
+            for r in replaced:
+                # 上のanyで確認したのでここではassertで良い
+                assert r is not None
+                # FIXME: stdoutに出力しても無駄
+                print(r)
+
+    def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
+        if self.__errored:
+            return
+        m_all = contextful_match({}, statement, self.__declarations)
+        for replace in m_all:
+            replaced = list(apply_match(replace, t) for t in statement)
+            if any(r is None for r in replaced):
+                self.__errored = True
+                return
+            for r in replaced:
+                # 上のanyで確認したのでここではassertで良い
+                assert r is not None
+                # FIXME
+                print(r)
+
     def eval_query_statement(self, statement: QueryStatement) -> None:
-        ...
+        if self.__errored:
+            return
+        if isinstance(statement, ConditionalStatement):
+            self._eval_query_cnd_statement(statement)
+        else:
+            self._eval_query_var_statement(statement)
 
     def get_output(self) -> str:
         return ""
