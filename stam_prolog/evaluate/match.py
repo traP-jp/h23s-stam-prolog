@@ -1,12 +1,8 @@
-from typing import Optional, Union
+from typing import Optional
 
 from frozenlist import FrozenList
 
-from ..ast import Atom, Stamps, Variable, VarSingleStatement, VarStamps
-
-
-def is_var(stamp: Union[Atom, Variable]) -> bool:
-    return type(stamp) is Variable
+from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
 def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]]:
@@ -15,17 +11,17 @@ def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]
     is_in_var = False
     var = []
     var_begin = 0
-    var_cnt = sum(1 for stamp in var_stamps if is_var(stamp))
+    var_cnt = sum(1 for stamp in var_stamps if isinstance(stamp, Variable))
     var_seen = i = j = 0
     while i < length_stamps:
-        if is_var(var_stamps[j]):
+        if isinstance(var_stamps[j], Variable):
             var_seen += 1
             if var_seen == var_cnt:
                 var.append([j, i, length_stamps - length_var_stamps + j])
                 i = length_stamps - (length_var_stamps - j - 1)
             elif j == length_var_stamps - 1:
                 var.append([j, i, length_stamps - 1])
-            elif is_var(var_stamps[j + 1]):
+            elif isinstance(var_stamps[j + 1], Variable):
                 var.append([j, i, i])
             else:
                 var_begin = i
@@ -59,9 +55,8 @@ def match_stamps(
     matched_dict: dict[Variable, Stamps] = {}
     for x in var:
         for i in range(x[1], x[2] + 1):
-            if is_var(var_stamps[x[0]]):
-                _var: Variable = var_stamps[x[0]]
-                matched_dict[_var].append(stamps[i])
+            if isinstance(var_stamps[x[0]], Variable):
+                matched_dict[var_stamps[x[0]]].append(stamps[i])
     if len(matched_dict):
         return matched_dict
     else:
