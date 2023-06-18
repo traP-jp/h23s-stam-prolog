@@ -83,8 +83,8 @@ class StatementParser:
         return res
 
     def parse_cond_statement(self, stamps: list[str]) -> ast.ConditionalStatement:
-        res_l = []
-        res_r = []
+        res_l: FrozenList[VarStamps] = FrozenList()
+        res_r: FrozenList[VarStamps] = FrozenList()
         kinds = self.judge_stamp_kinds(stamps)
         math_stack: list[tuple[StampKind, str]] = []
         ss_stack: list[ast.Atom | ast.Variable] = []
@@ -113,9 +113,7 @@ class StatementParser:
             fl = FrozenList(ss_stack)
             fl.freeze()
             res_r.append(fl)
-        fl_l = FrozenList(res_l)
-        fl_r = FrozenList(res_r)
-        return ast.ConditionalStatement.new(fl_l, fl_r)
+        return ast.ConditionalStatement.new(res_l, res_r)
 
     def parse(
         self, stamps: list[str]
