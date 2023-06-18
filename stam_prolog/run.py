@@ -13,4 +13,4 @@ def run(src: str) -> str:
             evaluator.eval_query_statement(p)  # type: ignore
         else:
             evaluator.eval_decl_statement(p)  # type: ignore
-    return evaluator.get_output()
+    return evaluator.get_output() or ":ayase_null:"
