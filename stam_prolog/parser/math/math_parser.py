@@ -1,4 +1,3 @@
-from ast import Expression
 from typing import Union
 
 from ...ast import math
@@ -19,7 +18,7 @@ def split_tokens(src: list[tuple[StampKind, str]]) -> list[Union[math.Literal, s
     return res
 
 
-def parse_math(src: list[tuple[StampKind, str]]) -> Expression:
+def parse_math(src: list[tuple[StampKind, str]]) -> math.Expression:
     tokens = split_tokens(src)
     output: list[math.Expression] = []
     operator_stack: list[str] = []
@@ -56,4 +55,4 @@ def parse_math(src: list[tuple[StampKind, str]]) -> Expression:
                 push_operator(operator_stack.pop())
             operator_stack.append(token)
             continue
-    raise NotImplementedError
+    return output[0]
