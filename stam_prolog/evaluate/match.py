@@ -56,8 +56,12 @@ def match_stamps(
         for i in range(x[1], x[2] + 1):
             v = var_stamps[x[0]]
             if isinstance(v, Variable):
+                if v not in matched_dict:
+                    matched_dict[v] = FrozenList()
                 matched_dict[v].append(stamps[i])
     if len(matched_dict):
+        for k in matched_dict:
+            matched_dict[k].freeze()
         return matched_dict
     else:
         return None
