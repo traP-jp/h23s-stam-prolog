@@ -2,9 +2,7 @@ from dataclasses import dataclass
 
 from . import Expression
 
-
-class Term(Expression):
-    pass
+Term = Expression
 
 
 @dataclass(frozen=True)
