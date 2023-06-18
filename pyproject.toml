@@ -46,7 +46,6 @@ include_trailing_comma = true
 max-line-length = 88
 extend-ignore = ["E203", "W503"]
 exclude = [".venv", ".git", "__pycache__"]
-max-complexity = 10
 
 [build-system]
 requires = ["poetry-core"]
