@@ -91,7 +91,7 @@ def apply_match(
     res = papply_match(match, var_stamps)
     if any(isinstance(v, Variable) for v in res):
         return None
-    return res
+    return res  # type: ignore
 
 
 def contextful_match(
