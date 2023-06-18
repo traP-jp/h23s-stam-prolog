@@ -1,3 +1,5 @@
+from typing import Union
+
 from stam_prolog.ast.statement import DeclStatement
 
 from ..ast import (
@@ -8,6 +10,17 @@ from ..ast import (
     VarSingleStatement,
 )
 from .match import apply_match, contextful_match
+
+
+class Ok(str):
+    pass
+
+
+class Err(str):
+    pass
+
+
+Output = Union[Ok, Err]
 
 
 class Evaluator:
