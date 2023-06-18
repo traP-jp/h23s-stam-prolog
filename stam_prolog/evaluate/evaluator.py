@@ -36,7 +36,7 @@ class Evaluator:
         declarationsにstatementを追加する
         既存conditionと全てマッチ確認→マッチしたものを適用してdecl追加
         """
-        if self.is_err():
+        if self.is_err() or len(statement) > 50:
             return
         # これ冪等なので何回もやってる
         statement.freeze()
