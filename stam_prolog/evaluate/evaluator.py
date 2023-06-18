@@ -24,19 +24,22 @@ Output = Union[Ok, Err]
 
 
 class Evaluator:
-    __slots__ = ("__declarations", "__cond_declarations", "__errored")
+    __slots__ = ("__declarations", "__cond_declarations", "__output")
 
     def __init__(self) -> None:
         self.__declarations: set[Stamps] = set()
         self.__cond_declarations: set[ConditionalStatement] = set()
-        self.__errored = False
+        self.__output: Output = Ok("")
+
+    def is_err(self) -> bool:
+        return isinstance(self.__output, Err)
 
     def _add_statement(self, statement: Stamps) -> None:
         """
         declarationsにstatementを追加する
         既存conditionと全てマッチ確認→マッチしたものを適用してdecl追加
         """
-        if self.__errored:
+        if self.is_err():
             return
         # これ冪等なので何回もやってる
         statement.freeze()
@@ -51,7 +54,7 @@ class Evaluator:
             for replace in m_all:
                 replaced = list(apply_match(replace, t) for t in c.then)
                 if any(r is None for r in replaced):
-                    # self.__errored = True マッチが足りなかっただけでエラーではない
+                    # self.is_err() = True マッチが足りなかっただけでエラーではない
                     return
                 for r in replaced:
                     # 上のanyで確認したのでここではassertで良い
@@ -63,7 +66,7 @@ class Evaluator:
         cond_declarationsにstatementを追加する
         マッチを全て列挙→マッチ適用後を全てdeclに追加
         """
-        if self.__errored:
+        if self.is_err():
             return
         if statement in self.__cond_declarations:
             return
@@ -72,7 +75,7 @@ class Evaluator:
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement.then)
             if any(r is None for r in replaced):
-                # self.__errored = True マッチが足りなかっただけでエラーではない
+                # self.is_err() = True マッチが足りなかっただけでエラーではない
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
@@ -80,18 +83,18 @@ class Evaluator:
                 self._add_statement(r)
 
     def eval_single_statement(self, statement: SingleStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         for s in statement:
             self._add_statement(s)
 
     def eval_conditional_statement(self, statement: ConditionalStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         self._add_cond_statement(statement)
 
     def eval_decl_statement(self, statement: DeclStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         if isinstance(statement, ConditionalStatement):
             self.eval_conditional_statement(statement)
@@ -99,13 +102,13 @@ class Evaluator:
             self.eval_single_statement(statement)
 
     def _eval_query_cnd_statement(self, statement: ConditionalStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         m_all = contextful_match({}, statement.condition, self.__declarations)
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement.then)
             if any(r is None for r in replaced):
-                # self.__errored = True
+                # self.is_err() = True
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
@@ -114,13 +117,13 @@ class Evaluator:
                 print(r)
 
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         m_all = contextful_match({}, statement, self.__declarations)
         for replace in m_all:
             replaced = list(apply_match(replace, t) for t in statement)
             if any(r is None for r in replaced):
-                # self.__errored = True
+                # self.is_err() = True
                 return
             for r in replaced:
                 # 上のanyで確認したのでここではassertで良い
@@ -129,7 +132,7 @@ class Evaluator:
                 print(r)
 
     def eval_query_statement(self, statement: QueryStatement) -> None:
-        if self.__errored:
+        if self.is_err():
             return
         if isinstance(statement, ConditionalStatement):
             self._eval_query_cnd_statement(statement)
