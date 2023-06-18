@@ -33,7 +33,7 @@ class StampKind(enum.Flag):
         if stamp in _NUMBERS:
             return cls.MathNumber
         if stamp in _SIGNS:
-            return cls.MathSign | cls.MathOperator
+            return cls.MathSign | cls.MathOperator | cls.Normal
         if stamp in _OPERATORS:
-            return cls.MathOperator
+            return cls.MathOperator | cls.Normal
         return cls.Normal
