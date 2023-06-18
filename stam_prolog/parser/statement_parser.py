@@ -2,6 +2,8 @@ from typing import Union
 
 from frozenlist import FrozenList
 
+from stam_prolog.ast.stamps import VarStamps
+
 from .. import ast
 from .math.math_parser import parse_math
 from .stamp_kind import StampKind
@@ -52,7 +54,7 @@ class StatementParser:
     def parse_single_statement(
         self, stamps: list[str]
     ) -> Union[ast.SingleStatement, ast.VarSingleStatement]:
-        res = []
+        res: FrozenList[VarStamps] = FrozenList()
         kinds = self.judge_stamp_kinds(stamps)
         math_stack: list[tuple[StampKind, str]] = []
         ss_stack: list[ast.Atom | ast.Variable] = []
@@ -77,9 +79,8 @@ class StatementParser:
             fl = FrozenList(ss_stack)
             fl.freeze()
             res.append(fl)
-        fl = FrozenList(iter(res))  # type: ignore
-        fl.freeze()
-        return FrozenList([fl])
+        res.freeze()
+        return res
 
     def parse_cond_statement(self, stamps: list[str]) -> ast.ConditionalStatement:
         res_l = []
