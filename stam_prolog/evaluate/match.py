@@ -1,5 +1,7 @@
 from typing import Optional
 
+from frozenlist import FrozenList
+
 from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
@@ -21,18 +23,23 @@ def match_stamps(
 
 def papply_match(match: dict[Variable, Stamps], var_stamps: VarStamps) -> VarStamps:
     """
-    TODO
     マッチしたVariableを置き換える
     置換できなかったvariableはそのまま
     """
-    raise NotImplementedError
+    res: VarStamps = FrozenList()
+    for v in var_stamps:
+        if isinstance(v, Variable):
+            res += match.get(v, [v])
+        else:
+            res.append(v)
+    res.freeze()
+    return res
 
 
 def apply_match(
     match: dict[Variable, Stamps], var_stamps: VarStamps
 ) -> Optional[Stamps]:
     """
-    TODO
     マッチしたVariableを置き換える
     var_stampsに置換できなかったvariableがあったらNoneを返す
     """
