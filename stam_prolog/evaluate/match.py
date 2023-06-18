@@ -11,17 +11,17 @@ def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]
     is_in_var = False
     var = []
     var_begin = 0
-    var_cnt = sum(1 for stamp in var_stamps if isinstance(stamp, Variable))
+    var_cnt = sum(1 for stamp in var_stamps if type(stamp) is Variable)
     var_seen = i = j = 0
     while i < length_stamps:
-        if isinstance(var_stamps[j], Variable):
+        if type(var_stamps[j]) is Variable:
             var_seen += 1
             if var_seen == var_cnt:
                 var.append([j, i, length_stamps - length_var_stamps + j])
                 i = length_stamps - (length_var_stamps - j - 1)
             elif j == length_var_stamps - 1:
                 var.append([j, i, length_stamps - 1])
-            elif isinstance(var_stamps[j + 1], Variable):
+            elif type(var_stamps[j + 1]) is Variable:
                 var.append([j, i, i])
             else:
                 var_begin = i
@@ -55,7 +55,7 @@ def match_stamps(
     matched_dict: dict[Variable, Stamps] = {}
     for x in var:
         for i in range(x[1], x[2] + 1):
-            if isinstance(var_stamps[x[0]], Variable):
+            if type(var_stamps[x[0]]) is Variable:
                 matched_dict[var_stamps[x[0]]].append(stamps[i])
     if len(matched_dict):
         return matched_dict
