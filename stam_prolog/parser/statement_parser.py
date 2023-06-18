@@ -111,14 +111,16 @@ class StatementParser:
         fl_r = FrozenList(res_r)
         return ast.ConditionalStatement.new(fl_l, fl_r)
 
-    def parse(self, stamps: list[str]) -> ast.DeclStatement | ast.QueryStatement:
+    def parse(
+        self, stamps: list[str]
+    ) -> tuple[bool, ast.DeclStatement | ast.QueryStatement]:
         kind = StatementKind.judge(stamps)
         if kind == StatementKind.NormalDeclaration:
-            return self.parse_single_statement(stamps)
+            return (False, self.parse_single_statement(stamps))
         if kind == StatementKind.ConditionalDeclaration:
-            return self.parse_cond_statement(stamps)
+            return (False, self.parse_cond_statement(stamps))
         if kind == StatementKind.NormalQuery:
-            return self.parse_single_statement(stamps)
+            return (True, self.parse_single_statement(stamps))
         if kind == StatementKind.ConditionalQuery:
-            return self.parse_cond_statement(stamps)
+            return (True, self.parse_cond_statement(stamps))
         raise NotImplementedError

@@ -1,7 +1,6 @@
-from stam_prolog.ast.statement import DeclStatement
-
 from ..ast import (
     ConditionalStatement,
+    DeclStatement,
     QueryStatement,
     SingleStatement,
     Stamps,
