@@ -1,4 +1,5 @@
 import json
+from sys import stderr
 from typing import Any, Dict, Optional
 
 from traq import ApiClient, Configuration
@@ -38,4 +39,6 @@ class Handler:
             res = run(msg)
         except Exception as e:
             res = str(e)
+            print(e, file=stderr)
+            return
         self.send_message(message.get("channelId", None), res)
