@@ -15,8 +15,6 @@ class Parser:
             return statements
         res = []
         for s in statements:
-            if isinstance(s, str):
-                return s
             sp = StatementParser()
             res.append(sp.parse(s))
         return res
