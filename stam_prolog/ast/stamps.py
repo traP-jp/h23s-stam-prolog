@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Union
 
+from frozenlist import FrozenList
+
 from .math import Expression
 
 
@@ -14,7 +16,6 @@ class Variable:
     name: str
 
 
-# immutableにしたいが厳しいかも
 Atom = Union[Stamp, Expression]
-Stamps = list[Atom]
-VarStamps = list[Union[Atom, Variable]]
+Stamps = FrozenList[Atom]
+VarStamps = FrozenList[Union[Atom, Variable]]
