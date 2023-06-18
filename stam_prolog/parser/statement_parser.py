@@ -18,7 +18,12 @@ class StatementParser:
         res: list[StampKind] = []
         for i, e in enumerate(ks):
             k, _ = e
-            if k & (StampKind.Variable | StampKind.ArrowRight | StampKind.MathNumber):
+            if k & (
+                StampKind.Variable
+                | StampKind.ArrowRight
+                | StampKind.MathNumber
+                | StampKind.And
+            ):
                 res.append(k)
                 continue
             if not k & StampKind.MathOperator:

@@ -20,7 +20,7 @@ class StampKind(enum.Flag):
     MathOperator = enum.auto()
     ArrowRight = enum.auto()
     And = enum.auto()
-    All = Normal | Variable | MathNumber | MathSign | MathOperator | ArrowRight
+    All = Normal | Variable | MathNumber | MathSign | MathOperator | ArrowRight | And
 
     # スタンプの種類を判定する
     # スタンプ例: ":heart:"
