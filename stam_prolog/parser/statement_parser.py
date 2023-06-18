@@ -116,11 +116,11 @@ class StatementParser:
     ) -> tuple[bool, ast.DeclStatement | ast.QueryStatement]:
         kind = StatementKind.judge(stamps)
         if kind == StatementKind.NormalDeclaration:
-            return (False, self.parse_single_statement(stamps))
+            return (False, self.parse_single_statement(stamps[:-1]))
         if kind == StatementKind.ConditionalDeclaration:
-            return (False, self.parse_cond_statement(stamps))
+            return (False, self.parse_cond_statement(stamps[:-1]))
         if kind == StatementKind.NormalQuery:
-            return (True, self.parse_single_statement(stamps))
+            return (True, self.parse_single_statement(stamps[:-1]))
         if kind == StatementKind.ConditionalQuery:
-            return (True, self.parse_cond_statement(stamps))
+            return (True, self.parse_cond_statement(stamps[:-1]))
         raise NotImplementedError
