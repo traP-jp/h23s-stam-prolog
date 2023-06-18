@@ -32,8 +32,8 @@ def _num2str(n: int) -> str:
 
 def to_str(statement: Union[Atom, Variable]) -> str:
     if isinstance(statement, Variable):
-        return f":{statement.name}:"
+        return f"{statement.name}"
     elif isinstance(statement, Stamp):
-        return f":{statement.name}:"
+        return f"{statement.name}"
     else:
         return _num2str(statement.eval())
