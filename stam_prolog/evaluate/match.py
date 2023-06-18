@@ -45,7 +45,15 @@ def contextful_match(
     declarations: set[Stamps],
 ) -> list[dict[Variable, Stamps]]:
     """
-    TODO
     既にvariableのマッチpre_matchが定まっている中で、declarationsに対してconditionがマッチするパターン全てを列挙する
     """
-    raise NotImplementedError
+    if not condition:
+        return [pre_match]
+    res = []
+    cond = papply_match(pre_match, condition[0])
+    for decl in declarations:
+        m = match_stamps(decl, cond)
+        if isinstance(m, dict):
+            m.update(pre_match)
+            res += contextful_match(m, condition[1:], declarations)
+    return res
