@@ -8,7 +8,7 @@ from ..ast import (
     Variable,
     VarSingleStatement,
 )
-from .match import apply_match, match_stamps
+from .match import apply_match, contextful_match, match_stamps
 
 
 class Evaluator:
@@ -22,7 +22,7 @@ class Evaluator:
     def _add_statement(self, statement: Stamps) -> None:
         """
         declarationsにstatementを追加する
-        cond_declarationsを見て、条件に合致するものがあれば、そのthenを追加する
+        既存conditionと全てマッチ確認→マッチしたものを適用してdecl追加
         """
         if self.__errored:
             return
@@ -31,19 +31,43 @@ class Evaluator:
         if statement in self.__declarations:
             return
         self.__declarations.add(statement)
-        for c_decl in self.__cond_declarations:
-            replace = self._match_condition(c_decl.condition)
-            if replace is None:
+        ss = {statement}
+        for c in self.__cond_declarations:
+            if not contextful_match({}, c.condition, ss):
                 continue
-            # replaceを適用してthenを追加する
-            replaced = list(apply_match(replace, t) for t in c_decl.then)
-            if any(r is None for r in replaced):
-                self.__errored = True
-                return
-            for r in replaced:
-                # 上のanyで確認したのでここではassertで良い
-                assert r is not None
-                self._add_statement(r)
+            m_all = contextful_match({}, c.condition, self.__declarations)
+            for replace in m_all:
+                replaced = list(apply_match(replace, t) for t in c.then)
+                if any(r is None for r in replaced):
+                    self.__errored = True
+                    return
+                for r in replaced:
+                    # 上のanyで確認したのでここではassertで良い
+                    assert r is not None
+                    self._add_statement(r)
+
+    def _add_cond_statement(self, statement: ConditionalStatement) -> None:
+        """
+        cond_declarationsにstatementを追加する
+        既存のdeclarationsとマッチするかどうかを確認して、マッチしたらthenを追加する
+        """
+        if self.__errored:
+            return
+        if statement in self.__cond_declarations:
+            return
+        self.__cond_declarations.add(statement)
+        replace = self._match_condition(statement.condition)
+        if replace is None:
+            return
+        # replaceを適用してthenを追加する
+        replaced = list(apply_match(replace, t) for t in statement.then)
+        if any(r is None for r in replaced):
+            self.__errored = True
+            return
+        for r in replaced:
+            # 上のanyで確認したのでここではassertで良い
+            assert r is not None
+            self._add_statement(r)
 
     def _match_condition(
         self, condition: VarSingleStatement
