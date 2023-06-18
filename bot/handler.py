@@ -5,6 +5,8 @@ from traq import ApiClient, Configuration
 from traq.api.message_api import MessageApi
 from traq.model.post_message_request import PostMessageRequest
 
+from stam_prolog.run import run
+
 
 class Handler:
     __slots__ = ("__client",)
@@ -28,8 +30,9 @@ class Handler:
             print("unexpected input")
             return
         # ここでメッセージを処理する
-        res = message.get("plainText", None)
-        if not isinstance(res, str):
+        msg = message.get("plainText", None)
+        if not isinstance(msg, str):
             print("unexpected input")
             return
+        res = run(msg)
         self.send_message(message.get("channelId", None), res)
