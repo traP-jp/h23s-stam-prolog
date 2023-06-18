@@ -19,6 +19,7 @@ class StampKind(enum.Flag):
     MathSign = enum.auto()
     MathOperator = enum.auto()
     ArrowRight = enum.auto()
+    And = enum.auto()
     All = Normal | Variable | MathNumber | MathSign | MathOperator | ArrowRight
 
     # スタンプの種類を判定する
@@ -30,6 +31,8 @@ class StampKind(enum.Flag):
             return cls.Variable
         if stamp == ":arrow_right:":
             return cls.ArrowRight
+        if stamp == ":and:":
+            return cls.And
         if stamp in _NUMBERS:
             return cls.MathNumber
         if stamp in _SIGNS:
