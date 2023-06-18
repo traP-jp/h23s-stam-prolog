@@ -69,7 +69,7 @@ class Evaluator:
     def eval_conditional_statement(self, statement: ConditionalStatement) -> None:
         if self.__errored:
             return
-        self.__cond_declarations.add(statement)
+        self._add_cond_statement(statement)
 
     def eval_decl_statement(self, statement: DeclStatement) -> None:
         if self.__errored:
