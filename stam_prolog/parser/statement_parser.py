@@ -105,6 +105,12 @@ class StatementParser:
                     res_l.append(ss_stack)
                 ss_stack = FrozenList()
                 continue
+            if k & StampKind.ArrowRight:
+                ss_stack.freeze()
+                res_l.append(ss_stack)
+                ss_stack = FrozenList()
+                read_arrow = True
+                continue
             ss_stack.append(ast.Stamp(s))
         if ss_stack:
             ss_stack.freeze()
