@@ -12,9 +12,6 @@ class StatementParser:
     def __init__(self) -> None:
         # 今処理している文の種類
         self.s_kind: StatementKind = StatementKind.NormalDeclaration
-        self.reading_math: bool = False
-        # 次に受け入れられるスタンプの種類
-        self.next_stamp_kind: StampKind = StampKind.All ^ StampKind.ArrowRight
 
     def judge_stamp_kinds(self, stamps: list[str]) -> list[StampKind]:
         ks = [(StampKind.judge(stamp), stamp) for stamp in stamps]
@@ -76,7 +73,11 @@ class StatementParser:
                 ss_stack.clear()
                 continue
             ss_stack.append(ast.Stamp(s))
-        fl = FrozenList(res)  # type: ignore
+        if ss_stack:
+            fl = FrozenList(ss_stack)
+            fl.freeze()
+            res.append(fl)
+        fl = FrozenList(iter(res))  # type: ignore
         fl.freeze()
         return FrozenList([fl])
 
