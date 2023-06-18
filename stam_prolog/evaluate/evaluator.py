@@ -19,15 +19,16 @@ class Err(str):
 
 
 class Evaluator:
-    __slots__ = ("__declarations", "__cond_declarations", "__output")
+    __slots__ = ("__declarations", "__cond_declarations", "__output", "__errored")
 
     def __init__(self) -> None:
         self.__declarations: set[Stamps] = set()
         self.__cond_declarations: set[ConditionalStatement] = set()
-        self.__output: str = Ok("")
+        self.__output: str = ""
+        self.__errored = False
 
     def is_err(self) -> bool:
-        return isinstance(self.__output, Err)
+        return self.__errored
 
     def _add_statement(self, statement: Stamps) -> None:
         """
@@ -109,7 +110,7 @@ class Evaluator:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
                 # ここstr(s)ではない
-                self.__output = Ok(self.__output + "".join(str(s) for s in r) + "\n")
+                self.__output += "".join(str(s) for s in r) + "\n"
 
     def _eval_query_var_statement(self, statement: VarSingleStatement) -> None:
         if self.is_err():
@@ -117,7 +118,7 @@ class Evaluator:
         if all(not isinstance(s, Variable) for ss in statement for s in ss):
             # statementは変数を含まない
             res = all(s in self.__declarations for ss in statement for s in ss)
-            self.__output += Ok(":true:\n" if res else ":false:\n")
+            self.__output += ":true:\n" if res else ":false:\n"
             return
         m_all = contextful_match({}, statement, self.__declarations)
         for replace in m_all:
@@ -129,7 +130,7 @@ class Evaluator:
                 # 上のanyで確認したのでここではassertで良い
                 assert r is not None
                 # ここstr(s)ではない
-                self.__output = Ok(self.__output + "".join(str(s) for s in r) + "\n")
+                self.__output += "".join(str(s) for s in r) + "\n"
 
     def eval_query_statement(self, statement: QueryStatement) -> None:
         if self.is_err():
@@ -140,4 +141,4 @@ class Evaluator:
             self._eval_query_var_statement(statement)
 
     def get_output(self) -> str:
-        return str(self.__output)
+        return self.__output
