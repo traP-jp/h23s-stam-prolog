@@ -141,4 +141,4 @@ class Evaluator:
             self._eval_query_var_statement(statement)
 
     def get_output(self) -> str:
-        return ""
+        return str(self.__output)
