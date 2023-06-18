@@ -70,7 +70,7 @@ class StatementParser:
                 fl = FrozenList(ss_stack)
                 fl.freeze()
                 res.append(fl)
-                ss_stack.clear()
+                ss_stack = []
                 continue
             ss_stack.append(ast.Stamp(s))
         if ss_stack:
@@ -105,9 +105,13 @@ class StatementParser:
                     res_r.append(fl)
                 else:
                     res_l.append(fl)
-                ss_stack.clear()
+                ss_stack = []
                 continue
             ss_stack.append(ast.Stamp(s))
+        if ss_stack:
+            fl = FrozenList(ss_stack)
+            fl.freeze()
+            res_r.append(fl)
         fl_l = FrozenList(res_l)
         fl_r = FrozenList(res_r)
         return ast.ConditionalStatement.new(fl_l, fl_r)
