@@ -4,7 +4,7 @@ from . import Env, Handler
 
 
 def main() -> None:
-    env = Env.from_env()
+    env = Env.load()
     bot = TraqBot(env.verification_token)
     handler = Handler(env.bot_access_token)
     bot.message_created(handler.on_message_created)
