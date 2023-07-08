@@ -29,7 +29,7 @@ class Env:
         )
 
     @classmethod
-    def from_env(cls) -> Self:
+    def load(cls) -> Self:
         keys = ["BOT_ID", "BOT_USER_ID", "VERIFICATION_TOKEN", "BOT_ACCESS_TOKEN"]
         # .env.devはデフォルト値
         env_d = {
@@ -41,4 +41,4 @@ class Env:
 
 
 if __name__ == "__main__":
-    print(Env.from_env())
+    print(Env.load())
