@@ -25,7 +25,7 @@ def extract_stamps(src: str) -> list[str]:
     return list_stamp
 
 
-def split_sentences(src: list[str]) -> Union[list[list[str]], str]:
+def split_statements(src: list[str]) -> Union[list[list[str]], str]:
     """
     スタンプ列を文ごとに分割する
     ex. ":technologist: :heart: :computer: :ton: :heart: :computer: :ton:".split()
