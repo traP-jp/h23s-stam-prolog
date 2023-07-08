@@ -6,7 +6,7 @@ from traq import ApiClient, Configuration
 from traq.api.message_api import MessageApi
 from traq.model.post_message_request import PostMessageRequest
 
-from stam_prolog.run import run
+from stam_prolog import run
 
 
 class Handler:
