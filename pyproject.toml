@@ -2,19 +2,26 @@
 name = "stam-prolog"
 version = "0.1.0"
 description = ""
-authors = ["H1rono"]
+authors = ["H1rono", "kenken714", "kamaboko720", "Kaki256", "sumirinn"]
 readme = "README.md"
-packages = [{ include = "stam_prolog" }, { include = "bot" }]
+
+[[tool.poetry.packages]]
+include = "stam_prolog"
+
+[[tool.poetry.packages]]
+include = "bot"
 
 [tool.poetry.scripts]
 bot = 'bot.run:main'
 
 [tool.poetry.dependencies]
 python = "^3.11"
-traq-bot = {git = "https://github.com/detteiu8383/python-traq-bot.git"}
 traq = "^3.9.1.post0"
 python-dotenv = "^1.0.0"
 frozenlist = "^1.3.3"
+
+[tool.poetry.dependencies.traq-bot]
+git = "https://github.com/detteiu8383/python-traq-bot.git"
 
 [tool.poetry.group.dev.dependencies]
 pyproject-flake8 = "^6.0.0.post1"
