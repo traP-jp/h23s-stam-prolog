@@ -51,8 +51,8 @@ def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]
                 j += 1
             else:
                 check = False
-    for l in var:
-        if l[1] > l[2]:
+    for variable_stamp in var:
+        if variable_stamp[1] > variable_stamp[2]:
             check = False
     return var
 
