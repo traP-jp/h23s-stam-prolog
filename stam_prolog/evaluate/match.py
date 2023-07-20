@@ -5,7 +5,7 @@ from frozenlist import FrozenList
 from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
-def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]]:
+def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[tuple[int, int, int]]:
     length_stamps = len(stamps)
     length_var_stamps = len(var_stamps)
     var = []
@@ -15,46 +15,54 @@ def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[list[int]
     while (not var_seen == var_cnt) or (not check):
         if (i == length_stamps) or (j == length_var_stamps):
             break
-        if isinstance(var_stamps[j], Variable):
-            var_seen += 1
-            if j == length_var_stamps - 1:
-                # 最後まで適用
-                var.append([j, i, length_stamps - 1])
-            elif var_seen == var_cnt:
-                var.append([j, i, length_stamps - length_var_stamps + j])
-                i = length_stamps - (length_var_stamps - j - 1)
-                j = length_var_stamps - (length_var_stamps - j - 1)
-                while i != length_stamps:
-                    if stamps[i] != var_stamps[j]:
-                        check = False
-                    i += 1
-                    j += 1
-            elif isinstance(var_stamps[j + 1], Variable):
-                # 変数連続の際
-                var.append([j, i, i])
-                i += 1
-                j += 1
-            else:
-                var_begin = i
-                i += 1
-                while stamps[i] != var_stamps[j + 1]:
-                    i += 1
-                    if i >= length_stamps:
-                        check = False
-                        break
-                # stamps[i] == var_stamps[j]
-                var.append([j, var_begin, i - 1])
-                j += 1
-        else:
+        if not isinstance(var_stamps[j], Variable):
             if stamps[i] == var_stamps[j]:
                 i += 1
                 j += 1
             else:
                 check = False
-    for variable_stamp in var:
-        if variable_stamp[1] > variable_stamp[2]:
-            check = False
-    return var
+                continue
+        var_seen += 1
+        if j == length_var_stamps - 1:
+            # 最後まで適用
+            var.append([j, i, length_stamps - 1])
+            i = length_stamps
+            j += 1
+        elif var_seen == var_cnt:
+            if i > length_stamps - length_var_stamps + j:
+                check = False
+                continue
+            var.append([j, i, length_stamps - length_var_stamps + j])
+            i = length_stamps - (length_var_stamps - j - 1)
+            j += 1
+            while i != length_stamps:
+                if stamps[i] != var_stamps[j]:
+                    check = False
+                i += 1
+                j += 1
+        elif isinstance(var_stamps[j + 1], Variable):
+            # 変数連続の際
+            var.append([j, i, i])
+            i += 1
+            j += 1
+        else:
+            var_begin = i
+            i += 1
+            while stamps[i] != var_stamps[j + 1]:
+                i += 1
+                if i >= length_stamps:
+                    check = False
+                    break
+            # stamps[i] == var_stamps[j]
+            var.append([j, var_begin, i - 1])
+            j += 1
+    # チェック
+    if i != length_stamps or j != length_var_stamps:
+        check = False
+    if check:
+        return var
+    else:
+        return
 
 
 def match_stamps(
