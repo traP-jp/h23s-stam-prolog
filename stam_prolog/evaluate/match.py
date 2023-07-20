@@ -7,7 +7,7 @@ from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 def match_stamps_search(
     stamps: Stamps, var_stamps: VarStamps
-) -> list[tuple[int, int, int]]:
+) -> list[tuple[int, int, int]] | None:
     length_stamps = len(stamps)
     length_var_stamps = len(var_stamps)
     var = []
@@ -23,7 +23,7 @@ def match_stamps_search(
                 j += 1
             else:
                 check = False
-                continue
+            continue
         var_seen += 1
         if j == length_var_stamps - 1:
             # 最後まで適用
