@@ -5,7 +5,9 @@ from frozenlist import FrozenList
 from ..ast import Stamps, Variable, VarSingleStatement, VarStamps
 
 
-def match_stamps_search(stamps: Stamps, var_stamps: VarStamps) -> list[tuple[int, int, int]]:
+def match_stamps_search(
+    stamps: Stamps, var_stamps: VarStamps
+) -> list[tuple[int, int, int]]:
     length_stamps = len(stamps)
     length_var_stamps = len(var_stamps)
     var = []
