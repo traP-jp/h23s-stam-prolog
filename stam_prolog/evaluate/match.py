@@ -80,6 +80,8 @@ def match_stamps(
     そもそもマッチしなかったらNoneを返す
     """
     var = match_stamps_search(stamps, var_stamps)
+    if var is None:
+        return None
     matched_dict: dict[Variable, Stamps] = {}
     for x in var:
         for i in range(x[1], x[2] + 1):
