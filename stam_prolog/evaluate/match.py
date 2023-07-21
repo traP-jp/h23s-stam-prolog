@@ -64,7 +64,7 @@ def match_stamps_search(
     if check:
         return var
     else:
-        return
+        return None
 
 
 def match_stamps(
