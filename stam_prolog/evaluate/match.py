@@ -27,14 +27,14 @@ def match_stamps_search(
         var_seen += 1
         if j == length_var_stamps - 1:
             # 最後まで適用
-            var.append([j, i, length_stamps - 1])
+            var.append((j, i, length_stamps - 1))
             i = length_stamps
             j += 1
         elif var_seen == var_cnt:
             if i > length_stamps - length_var_stamps + j:
                 check = False
                 continue
-            var.append([j, i, length_stamps - length_var_stamps + j])
+            var.append((j, i, length_stamps - length_var_stamps + j))
             i = length_stamps - (length_var_stamps - j - 1)
             j += 1
             while i != length_stamps:
@@ -44,7 +44,7 @@ def match_stamps_search(
                 j += 1
         elif isinstance(var_stamps[j + 1], Variable):
             # 変数連続の際
-            var.append([j, i, i])
+            var.append((j, i, i))
             i += 1
             j += 1
         else:
@@ -56,7 +56,7 @@ def match_stamps_search(
                     check = False
                     break
             # stamps[i] == var_stamps[j]
-            var.append([j, var_begin, i - 1])
+            var.append((j, var_begin, i - 1))
             j += 1
     # チェック
     if i != length_stamps or j != length_var_stamps:
