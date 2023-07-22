@@ -14,7 +14,7 @@ def match_stamps_search(
     var_cnt = sum(isinstance(stamp, Variable) for stamp in var_stamps)
     var_seen = i = j = 0
     check = True
-    while (not var_seen == var_cnt) or check:
+    while (not var_seen == var_cnt) and check:
         if (i == length_stamps) or (j == length_var_stamps):
             break
         if not isinstance(var_stamps[j], Variable):
