@@ -1,4 +1,3 @@
-import json
 from sys import stderr
 from typing import Any, Dict, Optional
 
@@ -23,17 +22,13 @@ class Handler:
 
     def on_message_created(self, payload: Optional[Dict]) -> None:
         if not payload:
-            print("[on_message_created] payload is None")
             return
-        print(json.dumps(payload, indent=2))
         message = payload.get("message", None)
         if not isinstance(message, dict):
-            print("unexpected input")
             return
         # ここでメッセージを処理する
         msg = message.get("plainText", None)
         if not isinstance(msg, str):
-            print("unexpected input")
             return
         try:
             res = run(msg)
